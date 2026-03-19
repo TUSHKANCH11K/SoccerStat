@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'
+import { ErrorMessage } from '../shared/ui/error-message'
+import { Loader } from '../shared/ui/loader'
 
 const TEAM_MATCH_DATES = [
   '2026-01-30',
@@ -16,6 +18,12 @@ const TEAM_MATCH_DATES = [
 export function TeamCalendarPage() {
   const { teamId } = useParams()
   const [range, setRange] = useState({ from: '', to: '' })
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIsLoading(false), 600)
+    return () => window.clearTimeout(timer)
+  }, [])
 
   const filteredDates = useMemo(() => {
     return TEAM_MATCH_DATES.filter((date) => {
@@ -29,11 +37,22 @@ export function TeamCalendarPage() {
     })
   }, [range])
 
+  const hasInvalidRange = Boolean(range.from && range.to && range.from > range.to)
+
+  if (isLoading) {
+    return <Loader label="Загружаем календарь команды..." />
+  }
+
+  if (teamId === '429') {
+    return <ErrorMessage variant="rate-limit" />
+  }
+
   return (
     <section>
       <Breadcrumbs items={[{ label: 'Команды', to: '/teams' }, { label: 'Календарь команды' }]} />
       <h1>Календарь команды</h1>
       <p>Команда ID: {teamId}</p>
+      {hasInvalidRange && <ErrorMessage message="Дата «с» не может быть позже даты «по»." />}
       <DateRangePicker value={range} onChange={setRange} />
       <ul className="entity-list">
         {filteredDates.map((date) => (
