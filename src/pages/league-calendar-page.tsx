@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCompetitionMatches } from '../shared/api/competition-matches-service'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'
 import { ErrorMessage } from '../shared/ui/error-message'
 import { Loader } from '../shared/ui/loader'
+import { Pagination } from '../shared/ui/pagination'
 import type { CompetitionMatch } from '../shared/types/match'
+
+const PAGE_SIZE = 10
 
 function formatDate(utcDate: string): string {
   return new Date(utcDate).toLocaleDateString('ru-RU')
@@ -53,8 +56,10 @@ function localizeMatchStatus(status: string): string {
 export function LeagueCalendarPage() {
   const { leagueId } = useParams()
   const [range, setRange] = useState({ from: '', to: '' })
+  const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [matches, setMatches] = useState<CompetitionMatch[]>([])
+  const [totalCount, setTotalCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
   const hasInvalidRange = Boolean(range.from && range.to && range.from > range.to)
@@ -86,6 +91,7 @@ export function LeagueCalendarPage() {
           return
         }
         setMatches(response.matches)
+        setTotalCount(response.count)
       } catch (loadError) {
         if (!isMounted) {
           return
@@ -107,6 +113,17 @@ export function LeagueCalendarPage() {
     }
   }, [hasInvalidRange, leagueId, range.from, range.to])
 
+  const safePage = Math.min(page, Math.max(1, Math.ceil(totalCount / PAGE_SIZE)))
+  const visibleMatches = useMemo(() => {
+    const startIndex = (safePage - 1) * PAGE_SIZE
+    return matches.slice(startIndex, startIndex + PAGE_SIZE)
+  }, [matches, safePage])
+
+  const handleRangeChange = (nextRange: { from: string; to: string }) => {
+    setRange(nextRange)
+    setPage(1)
+  }
+
   if (error) {
     return <ErrorMessage message={error} />
   }
@@ -120,7 +137,7 @@ export function LeagueCalendarPage() {
       <Breadcrumbs items={[{ label: 'Лиги', to: '/leagues' }, { label: 'Календарь лиги' }]} />
       <h1>Календарь лиги</h1>
       <p>Лига ID: {leagueId}</p>
-      <DateRangePicker value={range} onChange={setRange} />
+      <DateRangePicker value={range} onChange={handleRangeChange} />
       {hasInvalidRange && <ErrorMessage message="Дата «с» не может быть позже даты «по»." />}
       {hasPartialRange && (
         <ErrorMessage message="Для фильтрации по дате заполните оба поля: «с» и «по»." />
@@ -138,7 +155,7 @@ export function LeagueCalendarPage() {
             </tr>
           </thead>
           <tbody>
-            {matches.map((match) => (
+            {visibleMatches.map((match) => (
               <tr key={match.id}>
                 <td>{formatDate(match.utcDate)}</td>
                 <td>{formatTime(match.utcDate)}</td>
@@ -149,7 +166,7 @@ export function LeagueCalendarPage() {
                 <td>{formatScore(match)}</td>
               </tr>
             ))}
-            {matches.length === 0 && (
+            {visibleMatches.length === 0 && (
               <tr>
                 <td colSpan={5} className="matches-table__empty">
                   Матчи не найдены.
@@ -159,6 +176,13 @@ export function LeagueCalendarPage() {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        count={totalCount}
+        pageSize={PAGE_SIZE}
+        currentPage={safePage}
+        onPageChange={setPage}
+      />
     </section>
   )
 }
