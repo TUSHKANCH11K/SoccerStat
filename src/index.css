@@ -125,6 +125,55 @@ section p {
   color: #4b5563;
 }
 
+.search-bar {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 420px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.search-bar__icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+}
+
+.search-bar__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #111827;
+}
+
+.entity-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.entity-list__item {
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.entity-list__empty {
+  grid-column: 1 / -1;
+  color: #6b7280;
+}
+
 .pagination {
   margin-top: 20px;
   display: inline-flex;
