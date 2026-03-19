@@ -34,6 +34,22 @@ function formatScore(match: CompetitionMatch): string {
   return `${fullTime}${extraTime}${penalties}`
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  SCHEDULED: 'Запланирован',
+  TIMED: 'Запланирован',
+  LIVE: 'В прямом эфире',
+  IN_PLAY: 'В игре',
+  PAUSED: 'Пауза',
+  FINISHED: 'Завершён',
+  POSTPONED: 'Отложен',
+  SUSPENDED: 'Приостановлен',
+  CANCELED: 'Отменён',
+}
+
+function localizeMatchStatus(status: string): string {
+  return STATUS_LABELS[status] ?? status
+}
+
 export function LeagueCalendarPage() {
   const { leagueId } = useParams()
   const [range, setRange] = useState({ from: '', to: '' })
@@ -126,7 +142,7 @@ export function LeagueCalendarPage() {
               <tr key={match.id}>
                 <td>{formatDate(match.utcDate)}</td>
                 <td>{formatTime(match.utcDate)}</td>
-                <td>{match.status}</td>
+                <td>{localizeMatchStatus(match.status)}</td>
                 <td>
                   {match.homeTeam.name} — {match.awayTeam.name}
                 </td>
