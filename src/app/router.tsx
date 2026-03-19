@@ -1,0 +1,20 @@
+import { Navigate, createBrowserRouter } from 'react-router-dom'
+import { Layout } from './layout'
+import { LeagueCalendarPage } from '../pages/league-calendar-page'
+import { LeaguesPage } from '../pages/leagues-page'
+import { TeamCalendarPage } from '../pages/team-calendar-page'
+import { TeamsPage } from '../pages/teams-page'
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      { index: true, element: <Navigate to="/leagues" replace /> },
+      { path: 'leagues', element: <LeaguesPage /> },
+      { path: 'leagues/:leagueId/matches', element: <LeagueCalendarPage /> },
+      { path: 'teams', element: <TeamsPage /> },
+      { path: 'teams/:teamId/matches', element: <TeamCalendarPage /> },
+    ],
+  },
+])
