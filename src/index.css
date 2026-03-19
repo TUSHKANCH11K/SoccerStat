@@ -124,3 +124,50 @@ section p {
   margin: 0;
   color: #4b5563;
 }
+
+.pagination {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination__button {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pagination__button:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.pagination__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination__button--active {
+  background: #111827;
+  border-color: #111827;
+  color: #ffffff;
+}
+
+.pagination__ellipsis {
+  color: #6b7280;
+}
