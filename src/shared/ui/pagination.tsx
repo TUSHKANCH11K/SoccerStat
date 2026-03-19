@@ -40,7 +40,7 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
     <nav className="pagination" aria-label="Пагинация">
       <button
         type="button"
-        className="pagination__button"
+        className="pagination__button pagination__arrow"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrev}
         aria-label="Предыдущая страница"
@@ -79,7 +79,7 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
 
       <button
         type="button"
-        className="pagination__button"
+        className="pagination__button pagination__arrow"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext}
         aria-label="Следующая страница"

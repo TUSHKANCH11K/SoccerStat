@@ -11,8 +11,7 @@ export function Header() {
     <header className="app-header">
       <div className="app-header__container">
         <NavLink to="/" className="brand">
-          <img src={fifaLogo} className="brand__logo" alt="SoccerStat logo" />
-          <span>SoccerStat</span>
+          <img src={fifaLogo} className="brand__logo" alt="FIFA" />
         </NavLink>
 
         <nav className="app-nav" aria-label="Основная навигация">

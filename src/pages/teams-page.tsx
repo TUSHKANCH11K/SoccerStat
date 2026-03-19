@@ -1,25 +1,26 @@
 import { useMemo, useState } from 'react'
+import fifaLogo from '../assets/fifa_logo.svg'
 import { Pagination } from '../shared/ui/pagination'
 import { SearchBar } from '../shared/ui/search-bar'
 
 const TEAMS = [
-  'Manchester City',
-  'Arsenal',
-  'Liverpool',
-  'Barcelona',
-  'Real Madrid',
-  'Bayern Munich',
-  'Borussia Dortmund',
-  'Inter',
-  'Milan',
-  'Paris Saint-Germain',
-  'Ajax',
-  'Benfica',
-  'Al Nassr',
-  'LA Galaxy',
+  { name: 'Manchester City', logo: fifaLogo },
+  { name: 'Arsenal', logo: fifaLogo },
+  { name: 'Liverpool', logo: fifaLogo },
+  { name: 'Barcelona', logo: fifaLogo },
+  { name: 'Real Madrid', logo: fifaLogo },
+  { name: 'Bayern Munich', logo: fifaLogo },
+  { name: 'Borussia Dortmund', logo: fifaLogo },
+  { name: 'Inter', logo: fifaLogo },
+  { name: 'Milan', logo: fifaLogo },
+  { name: 'Paris Saint-Germain', logo: fifaLogo },
+  { name: 'Ajax', logo: fifaLogo },
+  { name: 'Benfica', logo: fifaLogo },
+  { name: 'Al Nassr', logo: fifaLogo },
+  { name: 'LA Galaxy', logo: fifaLogo },
 ]
 
-const PAGE_SIZE = 6
+const PAGE_SIZE = 8
 
 export function TeamsPage() {
   const [page, setPage] = useState(1)
@@ -31,7 +32,7 @@ export function TeamsPage() {
       return TEAMS
     }
 
-    return TEAMS.filter((team) => team.toLowerCase().includes(normalized))
+    return TEAMS.filter((team) => team.name.toLowerCase().includes(normalized))
   }, [query])
 
   const safePage = Math.min(page, Math.max(1, Math.ceil(filteredTeams.length / PAGE_SIZE)))
@@ -45,15 +46,15 @@ export function TeamsPage() {
 
   return (
     <section>
-      <h1>Команды</h1>
-      <SearchBar value={query} onChange={handleQueryChange} placeholder="Поиск команды" />
-      <ul className="entity-list">
+      <SearchBar value={query} onChange={handleQueryChange} placeholder="Search" />
+      <ul className="team-grid">
         {pageItems.map((team) => (
-          <li key={team} className="entity-list__item">
-            {team}
+          <li key={team.name} className="team-card">
+            <img src={team.logo} alt={team.name} className="team-card__logo" />
+            <h3 className="team-card__name">{team.name}</h3>
           </li>
         ))}
-        {pageItems.length === 0 && <li className="entity-list__empty">Ничего не найдено</li>}
+        {pageItems.length === 0 && <li className="team-grid__empty">Ничего не найдено</li>}
       </ul>
       <Pagination
         count={filteredTeams.length}
