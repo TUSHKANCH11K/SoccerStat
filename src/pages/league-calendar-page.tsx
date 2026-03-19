@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getCompetitionMatches } from '../shared/api/competition-matches-service'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
+import { DateRangePicker } from '../shared/ui/date-range-picker'
 import { ErrorMessage } from '../shared/ui/error-message'
 import { Loader } from '../shared/ui/loader'
 import type { CompetitionMatch } from '../shared/types/match'
@@ -35,9 +36,13 @@ function formatScore(match: CompetitionMatch): string {
 
 export function LeagueCalendarPage() {
   const { leagueId } = useParams()
+  const [range, setRange] = useState({ from: '', to: '' })
   const [isLoading, setIsLoading] = useState(true)
   const [matches, setMatches] = useState<CompetitionMatch[]>([])
   const [error, setError] = useState<string | null>(null)
+
+  const hasInvalidRange = Boolean(range.from && range.to && range.from > range.to)
+  const hasPartialRange = Boolean((range.from && !range.to) || (!range.from && range.to))
 
   useEffect(() => {
     const competitionId = Number(leagueId)
@@ -55,7 +60,12 @@ export function LeagueCalendarPage() {
       setError(null)
 
       try {
-        const response = await getCompetitionMatches(competitionId)
+        const params =
+          range.from && range.to && !hasInvalidRange
+            ? { dateFrom: range.from, dateTo: range.to }
+            : undefined
+
+        const response = await getCompetitionMatches(competitionId, params)
         if (!isMounted) {
           return
         }
@@ -79,7 +89,7 @@ export function LeagueCalendarPage() {
     return () => {
       isMounted = false
     }
-  }, [leagueId])
+  }, [hasInvalidRange, leagueId, range.from, range.to])
 
   if (error) {
     return <ErrorMessage message={error} />
@@ -94,6 +104,11 @@ export function LeagueCalendarPage() {
       <Breadcrumbs items={[{ label: 'Лиги', to: '/leagues' }, { label: 'Календарь лиги' }]} />
       <h1>Календарь лиги</h1>
       <p>Лига ID: {leagueId}</p>
+      <DateRangePicker value={range} onChange={setRange} />
+      {hasInvalidRange && <ErrorMessage message="Дата «с» не может быть позже даты «по»." />}
+      {hasPartialRange && (
+        <ErrorMessage message="Для фильтрации по дате заполните оба поля: «с» и «по»." />
+      )}
 
       <div className="matches-table-wrap">
         <table className="matches-table">
