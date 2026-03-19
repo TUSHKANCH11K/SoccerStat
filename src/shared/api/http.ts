@@ -6,12 +6,24 @@ interface RequestOptions extends Omit<RequestInit, 'method'> {
   method?: HttpMethod
 }
 
+export const BASE_URL = env.apiBaseUrl
+
 const DEFAULT_HEADERS: HeadersInit = {
   'X-Auth-Token': env.apiToken,
 }
 
-export async function apiRequest<T>(url: string, options: RequestOptions = {}): Promise<T> {
+function buildUrl(endpoint: string): string {
+  if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+    return endpoint
+  }
+
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  return `${BASE_URL}${normalizedEndpoint}`
+}
+
+export async function apiRequest<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const { headers, ...restOptions } = options
+  const url = buildUrl(endpoint)
 
   const response = await fetch(url, {
     ...restOptions,
