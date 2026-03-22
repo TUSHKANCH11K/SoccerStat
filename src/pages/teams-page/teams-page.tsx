@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import fifaLogo from '../assets/fifa_logo.svg'
+import fifaLogo from '../../assets/fifa_logo.svg'
 import { CatalogPageTemplate } from '../catalog-page-template/catalog-page-template'
 import { getTeams } from '../../shared/api/teams-service'
 import { resolveApiErrorMessage } from '../../shared/lib/api-error'

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import styles from './header.module.css'
-import fifaLogo from '../../assets/fifa_logo.svg'
+import fifaLogo from '../../../assets/fifa_logo.svg'
 
 const navItems = [
   { to: '/leagues', label: 'Лиги' },
