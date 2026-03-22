@@ -1,4 +1,5 @@
 import { env } from '../config/env'
+import { ApiRequestError } from '../lib/api-error'
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
@@ -25,16 +26,25 @@ export async function apiRequest<T>(endpoint: string, options: RequestOptions = 
   const { headers, ...restOptions } = options
   const url = buildUrl(endpoint)
 
-  const response = await fetch(url, {
-    ...restOptions,
-    headers: {
-      ...DEFAULT_HEADERS,
-      ...headers,
-    },
-  })
+  let response: Response
+
+  try {
+    response = await fetch(url, {
+      ...restOptions,
+      headers: {
+        ...DEFAULT_HEADERS,
+        ...headers,
+      },
+    })
+  } catch {
+    throw new ApiRequestError('Network request failed', { code: 'NETWORK' })
+  }
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`)
+    throw new ApiRequestError(`API request failed: ${response.status} ${response.statusText}`, {
+      status: response.status,
+      code: 'HTTP',
+    })
   }
 
   return response.json() as Promise<T>

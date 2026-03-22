@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import './league-calendar-page.css'
 import { getCompetitionMatches } from '../shared/api/competition-matches-service'
+import { resolveApiErrorMessage } from '../shared/lib/api-error'
 import { formatUtcDateToLocal, formatUtcTimeToLocal } from '../shared/lib/date-time'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'
@@ -89,9 +90,7 @@ export function LeagueCalendarPage() {
         if (!isMounted) {
           return
         }
-        setError(
-          loadError instanceof Error ? loadError.message : 'Не удалось загрузить матчи лиги.',
-        )
+        setError(resolveApiErrorMessage(loadError, 'Не удалось загрузить матчи лиги.'))
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -164,7 +163,7 @@ export function LeagueCalendarPage() {
             {visibleMatches.length === 0 && (
               <tr>
                 <td colSpan={5} className="matches-table__empty">
-                  Матчи не найдены.
+                  {range.from || range.to ? 'Нет матчей в выбранном периоде.' : 'Список матчей пуст.'}
                 </td>
               </tr>
             )}

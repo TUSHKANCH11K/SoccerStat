@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import './team-calendar-page.css'
 import { getTeamById, getTeamMatches } from '../shared/api/team-matches-service'
+import { resolveApiErrorMessage } from '../shared/lib/api-error'
 import { formatUtcDateToLocal, formatUtcTimeToLocal } from '../shared/lib/date-time'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'
@@ -95,7 +96,7 @@ export function TeamCalendarPage() {
           return
         }
 
-        setError(loadError instanceof Error ? loadError.message : 'Не удалось загрузить матчи команды.')
+        setError(resolveApiErrorMessage(loadError, 'Не удалось загрузить матчи команды.'))
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -162,7 +163,7 @@ export function TeamCalendarPage() {
             {visibleMatches.length === 0 && (
               <tr>
                 <td colSpan={5} className="matches-table__empty">
-                  Матчи не найдены.
+                  {range.from || range.to ? 'Нет матчей в выбранном периоде.' : 'Список матчей пуст.'}
                 </td>
               </tr>
             )}

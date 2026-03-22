@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import fifaLogo from '../assets/fifa_logo.svg'
 import { CatalogPageTemplate } from './catalog-page-template'
 import { getTeams } from '../shared/api/teams-service'
+import { resolveApiErrorMessage } from '../shared/lib/api-error'
 import type { Team } from '../shared/types/team'
 import { ErrorMessage } from '../shared/ui/error-message'
 import { Loader } from '../shared/ui/loader'
@@ -35,7 +36,7 @@ export function TeamsPage() {
           return
         }
 
-        setError(loadError instanceof Error ? loadError.message : 'Не удалось загрузить список команд.')
+        setError(resolveApiErrorMessage(loadError, 'Не удалось загрузить список команд.'))
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -91,6 +92,7 @@ export function TeamsPage() {
         fallbackImageUrl: fifaLogo,
         linkTo: `/teams/${team.id}/matches`,
       }))}
+      emptyText={query ? 'Ничего не найдено' : 'Список команд пуст.'}
       count={filteredTeams.length}
       pageSize={PAGE_SIZE}
       currentPage={safePage}

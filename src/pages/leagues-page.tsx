@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import fifaLogo from '../assets/fifa_logo.svg'
 import { CatalogPageTemplate } from './catalog-page-template'
 import { getCompetitions } from '../shared/api/competitions-service'
+import { resolveApiErrorMessage } from '../shared/lib/api-error'
 import type { Competition } from '../shared/types/competition'
 import { ErrorMessage } from '../shared/ui/error-message'
 import { Loader } from '../shared/ui/loader'
@@ -35,9 +36,7 @@ export function LeaguesPage() {
           return
         }
 
-        setError(
-          loadError instanceof Error ? loadError.message : 'Не удалось загрузить список лиг.',
-        )
+        setError(resolveApiErrorMessage(loadError, 'Не удалось загрузить список лиг.'))
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -94,6 +93,7 @@ export function LeaguesPage() {
         fallbackImageUrl: fifaLogo,
         linkTo: `/leagues/${league.id}/matches`,
       }))}
+      emptyText={query ? 'Ничего не найдено' : 'Список лиг пуст.'}
       count={filteredLeagues.length}
       pageSize={PAGE_SIZE}
       currentPage={safePage}
