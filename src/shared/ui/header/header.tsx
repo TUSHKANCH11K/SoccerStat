@@ -20,7 +20,7 @@ export function Header() {
             <NavLink
               key={item.to}
               to={item.to}
-              className={({ isActive }) => (isActive ? styles['nav-link--active'] : styles['nav-link'])}
+              className={({ isActive }) => [styles['nav-link'], isActive ? styles['nav-link--active'] : ''].join(' ')}
             >
               {item.label}
             </NavLink>

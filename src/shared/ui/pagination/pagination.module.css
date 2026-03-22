@@ -30,7 +30,7 @@
 }
 
 .pagination__button:hover:not(:disabled) {
-  background: #f5f5f5;
+  opacity: 0.8;
 }
 
 .pagination__button:disabled {

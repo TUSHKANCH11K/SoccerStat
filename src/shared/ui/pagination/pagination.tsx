@@ -40,10 +40,10 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
   const canGoNext = currentPage < totalPages
 
   return (
-    <nav className="pagination" aria-label="Пагинация">
+    <nav className={styles['pagination']} aria-label="Пагинация">
       <button
         type="button"
-        className={styles['pagination__button'] + ' ' + styles['pagination__arrow']}
+        className={[styles['pagination__button'], styles['pagination__arrow']].join(' ')}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!canGoPrev}
         aria-label="Предыдущая страница"
@@ -51,11 +51,11 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
         {'<'}
       </button>
 
-      <ul className="pagination__list">
+      <ul className={styles['pagination__list']}>
         {pageItems.map((item, index) => {
           if (item === 'ellipsis') {
             return (
-              <li key={`ellipsis-${index}`} className="pagination__ellipsis" aria-hidden="true">
+              <li key={`ellipsis-${index}`} className={styles['pagination__ellipsis']} aria-hidden="true">
                 …
               </li>
             )
@@ -68,7 +68,7 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
               <button
                 type="button"
                 className={
-                  isActive ? 'pagination__button pagination__button--active' : 'pagination__button'
+                  isActive ? [styles['pagination__button'], styles['pagination__button--active']].join(' ') : styles['pagination__button']
                 }
                 onClick={() => onPageChange(item)}
                 aria-current={isActive ? 'page' : undefined}
@@ -82,7 +82,7 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
 
       <button
         type="button"
-        className="pagination__button pagination__arrow"
+        className={[styles['pagination__button'], styles['pagination__arrow']].join(' ')}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!canGoNext}
         aria-label="Следующая страница"

@@ -61,9 +61,9 @@ export function CatalogPageTemplate({
     <section>
       <SearchBar value={searchValue} onChange={onSearchChange} placeholder={searchPlaceholder} />
 
-      <ul className={`catalog-grid catalog-grid--${variant}`}>
+      <ul className={styles['catalog-grid'] + ' ' + styles[`catalog-grid--${variant}`]}>
         {items.map((item) => (
-          <li key={item.id} className={`catalog-card catalog-card--${variant}`}>
+          <li key={item.id} className={styles['catalog-card'] + ' ' + styles[`catalog-card--${variant}`]}>
             <CatalogCard item={item} />
           </li>
         ))}
