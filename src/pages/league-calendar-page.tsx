@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import './league-calendar-page.css'
 import { getCompetitionMatches } from '../shared/api/competition-matches-service'
+import { formatUtcDateToLocal, formatUtcTimeToLocal } from '../shared/lib/date-time'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'
 import { ErrorMessage } from '../shared/ui/error-message'
@@ -10,17 +11,6 @@ import { Pagination } from '../shared/ui/pagination'
 import type { CompetitionMatch } from '../shared/types/match'
 
 const PAGE_SIZE = 10
-
-function formatDate(utcDate: string): string {
-  return new Date(utcDate).toLocaleDateString('ru-RU')
-}
-
-function formatTime(utcDate: string): string {
-  return new Date(utcDate).toLocaleTimeString('ru-RU', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
 
 function formatPart(home: number | null | undefined, away: number | null | undefined): string {
   return `${home ?? '-'}:${away ?? '-'}`
@@ -60,6 +50,7 @@ export function LeagueCalendarPage() {
   const [page, setPage] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [matches, setMatches] = useState<CompetitionMatch[]>([])
+  const [leagueName, setLeagueName] = useState('Лига')
   const [totalCount, setTotalCount] = useState(0)
   const [error, setError] = useState<string | null>(null)
 
@@ -92,6 +83,7 @@ export function LeagueCalendarPage() {
           return
         }
         setMatches(response.matches)
+        setLeagueName(response.competition.name || 'Лига')
         setTotalCount(response.count)
       } catch (loadError) {
         if (!isMounted) {
@@ -134,11 +126,15 @@ export function LeagueCalendarPage() {
   }
 
   return (
-    <section>
-      <Breadcrumbs items={[{ label: 'Лиги', to: '/leagues' }, { label: 'Календарь лиги' }]} />
-      <h1>Календарь лиги</h1>
-      <p>Лига ID: {leagueId}</p>
-      <DateRangePicker value={range} onChange={handleRangeChange} />
+    <section className="league-calendar-page">
+      <Breadcrumbs items={[{ label: 'Лиги', to: '/leagues' }, { label: leagueName }]} separator=">" />
+      <DateRangePicker
+        value={range}
+        onChange={handleRangeChange}
+        labelFrom="Матчи с"
+        labelTo="по"
+        inline
+      />
       {hasInvalidRange && <ErrorMessage message="Дата «с» не может быть позже даты «по»." />}
       {hasPartialRange && (
         <ErrorMessage message="Для фильтрации по дате заполните оба поля: «с» и «по»." />
@@ -146,25 +142,23 @@ export function LeagueCalendarPage() {
 
       <div className="matches-table-wrap">
         <table className="matches-table">
-          <thead>
-            <tr>
-              <th>Дата</th>
-              <th>Время</th>
-              <th>Статус</th>
-              <th>Команда А — Б</th>
-              <th>Счёт</th>
-            </tr>
-          </thead>
+          <colgroup>
+            <col className="matches-table__col matches-table__col--date" />
+            <col className="matches-table__col matches-table__col--time" />
+            <col className="matches-table__col matches-table__col--status" />
+            <col className="matches-table__col matches-table__col--teams" />
+            <col className="matches-table__col matches-table__col--score" />
+          </colgroup>
           <tbody>
             {visibleMatches.map((match) => (
               <tr key={match.id}>
-                <td>{formatDate(match.utcDate)}</td>
-                <td>{formatTime(match.utcDate)}</td>
-                <td>{localizeMatchStatus(match.status)}</td>
-                <td>
+                <td className="matches-table__cell matches-table__cell--date">{formatUtcDateToLocal(match.utcDate)}</td>
+                <td className="matches-table__cell matches-table__cell--time">{formatUtcTimeToLocal(match.utcDate)}</td>
+                <td className="matches-table__cell matches-table__cell--status">{localizeMatchStatus(match.status)}</td>
+                <td className="matches-table__cell matches-table__cell--teams">
                   {match.homeTeam.name} — {match.awayTeam.name}
                 </td>
-                <td>{formatScore(match)}</td>
+                <td className="matches-table__cell matches-table__cell--score">{formatScore(match)}</td>
               </tr>
             ))}
             {visibleMatches.length === 0 && (

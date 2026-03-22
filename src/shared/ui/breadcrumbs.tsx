@@ -9,9 +9,10 @@ export interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[]
+  separator?: string
 }
 
-export function Breadcrumbs({ items }: BreadcrumbsProps) {
+export function Breadcrumbs({ items, separator = '>' }: BreadcrumbsProps) {
   return (
     <nav aria-label="Хлебные крошки" className="breadcrumbs">
       <ol className="breadcrumbs__list">
@@ -31,7 +32,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                   </span>
                 )}
               </li>
-              {!isLast && <li className="breadcrumbs__separator">/</li>}
+              {!isLast && <li className="breadcrumbs__separator">{separator}</li>}
             </Fragment>
           )
         })}
