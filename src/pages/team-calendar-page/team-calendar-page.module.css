@@ -1,0 +1,105 @@
+
+.matches-table-wrap {
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.matches-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+}
+
+.matches-table__col--date {
+  width: 120px;
+}
+
+.matches-table__col--time {
+  width: 70px;
+}
+
+.matches-table__col--status {
+  width: 90px;
+}
+
+.matches-table__col--score {
+  width: 160px;
+}
+
+.matches-table tbody tr {
+  height: 48px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.matches-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.matches-table tbody tr:hover {
+  background: #f5f5f5;
+}
+
+.matches-table__cell {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  color: #333333;
+}
+
+.matches-table__cell--date {
+  white-space: nowrap;
+}
+
+.matches-table__cell--score {
+  text-align: right;
+}
+
+.team-calendar-page .breadcrumbs {
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.team-calendar-page .breadcrumbs__list {
+  gap: 0;
+}
+
+.team-calendar-page .breadcrumbs__link,
+.team-calendar-page .breadcrumbs__current {
+  color: #333333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.team-calendar-page .breadcrumbs__separator {
+  color: #999999;
+  margin: 0 6px;
+}
+
+.matches-table__empty {
+  text-align: center !important;
+  color: #6b7280 !important;
+}
+
+@media (max-width: 1024px) {
+  .matches-table-wrap {
+    overflow-x: auto;
+  }
+
+  .matches-table {
+    min-width: 760px;
+  }
+}
+
+@media (max-width: 767px) {
+  .team-calendar-page .breadcrumbs {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
+  .matches-table__cell {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
