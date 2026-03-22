@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, separator = '>' }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Хлебные крошки" className={styles['breadcrumbs']}    >
+    <nav aria-label="Хлебные крошки" className={styles['breadcrumbs']}>
       <ol className={styles['breadcrumbs__list']}>
         {items.map((item, index) => {
           const isLast = index === items.length - 1

@@ -1,5 +1,5 @@
 import searchIcon from '@/assets/search_icon.svg'
-import styles from './search-bar.module.css' 
+import styles from './search-bar.module.css'
 
 interface SearchBarProps {
   value: string

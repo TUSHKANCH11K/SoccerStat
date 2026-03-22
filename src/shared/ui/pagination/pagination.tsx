@@ -1,6 +1,5 @@
 import styles from './pagination.module.css'
 
-
 interface PaginationProps {
   count: number
   pageSize: number
@@ -55,7 +54,11 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
         {pageItems.map((item, index) => {
           if (item === 'ellipsis') {
             return (
-              <li key={`ellipsis-${index}`} className={styles['pagination__ellipsis']} aria-hidden="true">
+              <li
+                key={`ellipsis-${index}`}
+                className={styles['pagination__ellipsis']}
+                aria-hidden="true"
+              >
                 …
               </li>
             )
@@ -68,7 +71,9 @@ export function Pagination({ count, pageSize, currentPage, onPageChange }: Pagin
               <button
                 type="button"
                 className={
-                  isActive ? [styles['pagination__button'], styles['pagination__button--active']].join(' ') : styles['pagination__button']
+                  isActive
+                    ? [styles['pagination__button'], styles['pagination__button--active']].join(' ')
+                    : styles['pagination__button']
                 }
                 onClick={() => onPageChange(item)}
                 aria-current={isActive ? 'page' : undefined}

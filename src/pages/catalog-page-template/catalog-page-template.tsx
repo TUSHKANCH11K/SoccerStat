@@ -1,16 +1,6 @@
-import { Link } from 'react-router-dom'
-import { Pagination } from '../../shared/ui/pagination/pagination'
-import { SearchBar } from '../../shared/ui/search-bar/search-bar'
-import styles from './catalog-page-template.module.css'
-
-export interface CatalogCardItem {
-  id: number
-  name: string
-  subtitle?: string
-  imageUrl?: string | null
-  fallbackImageUrl: string
-  linkTo?: string
-}
+import { Pagination, SearchBar } from '@/shared/ui'
+import styles from './ui/catalog-card/catalog-card.module.css'
+import { CatalogCard, type CatalogCardItem } from './ui/catalog-card'
 
 interface CatalogPageTemplateProps {
   variant: 'league' | 'team'
@@ -23,26 +13,6 @@ interface CatalogPageTemplateProps {
   pageSize: number
   currentPage: number
   onPageChange: (page: number) => void
-}
-
-function CatalogCard({ item }: { item: CatalogCardItem }) {
-  const content = (
-    <>
-      <img src={item.imageUrl || item.fallbackImageUrl} alt={item.name} className={styles['catalog-card__logo']} />
-      <h3 className={styles['catalog-card__name']}>{item.name}</h3>
-      {item.subtitle && <p className={styles['catalog-card__subtitle']}>{item.subtitle}</p>}
-    </>
-  )
-
-  if (item.linkTo) {
-    return (
-      <Link to={item.linkTo} className={styles['catalog-card__link']}>
-        {content}
-      </Link>
-    )
-  }
-
-  return <div className={styles['catalog-card__body']}>{content}</div>
 }
 
 export function CatalogPageTemplate({
@@ -63,7 +33,10 @@ export function CatalogPageTemplate({
 
       <ul className={styles['catalog-grid'] + ' ' + styles[`catalog-grid--${variant}`]}>
         {items.map((item) => (
-          <li key={item.id} className={styles['catalog-card'] + ' ' + styles[`catalog-card--${variant}`]}>
+          <li
+            key={item.id}
+            className={styles['catalog-card'] + ' ' + styles[`catalog-card--${variant}`]}
+          >
             <CatalogCard item={item} />
           </li>
         ))}

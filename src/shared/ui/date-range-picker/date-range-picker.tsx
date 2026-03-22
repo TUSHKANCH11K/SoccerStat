@@ -8,24 +8,23 @@ interface DateRangeValue {
 interface DateRangePickerProps {
   value: DateRangeValue
   onChange: (nextValue: DateRangeValue) => void
-  labelFrom?: string
-  labelTo?: string
   inline?: boolean
 }
 
-export function DateRangePicker({
-  value,
-  onChange,
-  labelFrom = 'Матчи с',
-  labelTo = 'по',
-  inline = false,
-}: DateRangePickerProps) {
+export function DateRangePicker({ value, onChange, inline = false }: DateRangePickerProps) {
   if (inline) {
     return (
-      <div className={styles['date-range'] + ' ' + styles['date-range--inline']} aria-label="Фильтр по дате">
-        <span className={styles['date-range__text']}>{labelFrom}</span>
+      <div
+        className={styles['date-range'] + ' ' + styles['date-range--inline']}
+        aria-label="Фильтр по дате"
+      >
+        <span className={styles['date-range__text']}>Матчи с</span>
 
-        <div className={styles['date-range__input-wrap'] + ' ' + styles['date-range__input-wrap--inline']}>
+        <div
+          className={
+            styles['date-range__input-wrap'] + ' ' + styles['date-range__input-wrap--inline']
+          }
+        >
           <input
             type="date"
             value={value.from}
@@ -33,14 +32,15 @@ export function DateRangePicker({
             onChange={(event) => onChange({ ...value, from: event.target.value })}
             className={styles['date-range__input']}
           />
-          <span className={styles['date-range__icon']} aria-hidden="true">
-            
-          </span>
         </div>
 
-        <span className={styles['date-range__text']}>{labelTo}</span>
+        <span className={styles['date-range__text']}>по</span>
 
-        <div className={styles['date-range__input-wrap'] + ' ' + styles['date-range__input-wrap--inline']}>
+        <div
+          className={
+            styles['date-range__input-wrap'] + ' ' + styles['date-range__input-wrap--inline']
+          }
+        >
           <input
             type="date"
             value={value.to}
@@ -48,9 +48,6 @@ export function DateRangePicker({
             onChange={(event) => onChange({ ...value, to: event.target.value })}
             className={styles['date-range__input']}
           />
-          <span className={styles['date-range__icon']} aria-hidden="true">
-            
-          </span>
         </div>
       </div>
     )
@@ -59,7 +56,7 @@ export function DateRangePicker({
   return (
     <div className={styles['date-range']} aria-label="Фильтр по дате">
       <label className={styles['date-range__field']}>
-        <span className={styles['date-range__label']}>{labelFrom}</span>
+        <span className={styles['date-range__label']}>Матчи с</span>
         <div className={styles['date-range__input-wrap']}>
           <input
             type="date"
@@ -68,14 +65,11 @@ export function DateRangePicker({
             onChange={(event) => onChange({ ...value, from: event.target.value })}
             className={styles['date-range__input']}
           />
-          <span className={styles['date-range__icon']} aria-hidden="true">
-            
-          </span>
         </div>
       </label>
 
       <label className={styles['date-range__field']}>
-        <span className={styles['date-range__label']}>{labelTo}</span>
+        <span className={styles['date-range__label']}>по</span>
         <div className={styles['date-range__input-wrap']}>
           <input
             type="date"
@@ -84,9 +78,6 @@ export function DateRangePicker({
             onChange={(event) => onChange({ ...value, to: event.target.value })}
             className={styles['date-range__input']}
           />
-          <span className={styles['date-range__icon']} aria-hidden="true">
-            
-          </span>
         </div>
       </label>
     </div>

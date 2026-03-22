@@ -1,57 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import styles from './league-calendar-page.module.css'
-import { getCompetitionMatches } from '../../shared/api/competition-matches-service'
-import { resolveApiErrorMessage } from '../../shared/lib/api-error'
-import { formatUtcDateToLocal, formatUtcTimeToLocal } from '../../shared/lib/date-time'
-import { Breadcrumbs } from '../../shared/ui/breadcrumbs/breadcrumbs'
-import { DateRangePicker } from '../../shared/ui/date-range-picker/date-range-picker'
-import { ErrorMessage } from '../../shared/ui/error-message/error-message'
-import { Loader } from '../../shared/ui/loader/loader'
-import { Pagination } from '../../shared/ui/pagination/pagination'
-import type { CompetitionMatch } from '../../shared/types/match'
-
-const PAGE_SIZE = 10
-
-function formatPart(home: number | null | undefined, away: number | null | undefined): string {
-  return `${home ?? '-'}:${away ?? '-'}`
-}
-
-function hasNonNullScore(home: number | null | undefined, away: number | null | undefined): boolean {
-  return home !== null && home !== undefined && away !== null && away !== undefined
-}
-
-function formatScore(match: CompetitionMatch): string {
-  const fullTime = formatPart(match.score.fullTime.homeTeam, match.score.fullTime.awayTeam)
-  const extraTime =
-    match.score.extraTime &&
-      hasNonNullScore(match.score.extraTime.homeTeam, match.score.extraTime.awayTeam)
-      ? `(${formatPart(match.score.extraTime.homeTeam, match.score.extraTime.awayTeam)})`
-      : ''
-  const penalties =
-    match.score.penalties &&
-      hasNonNullScore(match.score.penalties.homeTeam, match.score.penalties.awayTeam)
-      ? `(${formatPart(match.score.penalties.homeTeam, match.score.penalties.awayTeam)})`
-      : ''
-
-  return `${fullTime}${extraTime}${penalties}`
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  SCHEDULED: 'Запланирован',
-  TIMED: 'Запланирован',
-  LIVE: 'В прямом эфире',
-  IN_PLAY: 'В игре',
-  PAUSED: 'Пауза',
-  FINISHED: 'Завершён',
-  POSTPONED: 'Отложен',
-  SUSPENDED: 'Приостановлен',
-  CANCELED: 'Отменён',
-}
-
-function localizeMatchStatus(status: string): string {
-  return STATUS_LABELS[status] ?? status
-}
+import { getCompetitionMatches } from '@/shared/api/competition-matches-service'
+import { Breadcrumbs, DateRangePicker, ErrorMessage, Loader, Pagination } from '@/shared/ui'
+import type { CompetitionMatch } from '@/shared/types/match'
+import { CALENDAR_PAGE_SIZE } from '@/shared/consts'
+import { resolveApiErrorMessage } from '@/shared/lib'
+import { MatchesTable } from '@/shared/ui/matches-table'
 
 export function LeagueCalendarPage() {
   const { leagueId } = useParams()
@@ -113,10 +68,10 @@ export function LeagueCalendarPage() {
     }
   }, [hasInvalidRange, leagueId, range.from, range.to])
 
-  const safePage = Math.min(page, Math.max(1, Math.ceil(totalCount / PAGE_SIZE)))
+  const safePage = Math.min(page, Math.max(1, Math.ceil(totalCount / CALENDAR_PAGE_SIZE)))
   const visibleMatches = useMemo(() => {
-    const startIndex = (safePage - 1) * PAGE_SIZE
-    return matches.slice(startIndex, startIndex + PAGE_SIZE)
+    const startIndex = (safePage - 1) * CALENDAR_PAGE_SIZE
+    return matches.slice(startIndex, startIndex + CALENDAR_PAGE_SIZE)
   }, [matches, safePage])
 
   const handleRangeChange = (nextRange: { from: string; to: string }) => {
@@ -134,54 +89,21 @@ export function LeagueCalendarPage() {
 
   return (
     <section className={styles['league-calendar-page']}>
-      <Breadcrumbs items={[{ label: 'Лиги', to: '/leagues' }, { label: leagueName }]} separator=">" />
-      <DateRangePicker
-        value={range}
-        onChange={handleRangeChange}
-        labelFrom="Матчи с"
-        labelTo="по"
-        inline
+      <Breadcrumbs
+        items={[{ label: 'Лиги', to: '/leagues' }, { label: leagueName }]}
+        separator=">"
       />
+      <DateRangePicker value={range} onChange={handleRangeChange} inline />
       {hasInvalidRange && <ErrorMessage message="Дата «с» не может быть позже даты «по»." />}
       {hasPartialRange && (
         <ErrorMessage message="Для фильтрации по дате заполните оба поля: «с» и «по»." />
       )}
 
-      <div className={styles['matches-table-wrap']}>
-        <table className={styles['matches-table']}>
-          <colgroup>
-            <col className={styles['matches-table__col'] + ' ' + styles['matches-table__col--date']} />
-            <col className={styles['matches-table__col'] + ' ' + styles['matches-table__col--time']} />
-            <col className={styles['matches-table__col'] + ' ' + styles['matches-table__col--status']} />
-            <col className={styles['matches-table__col'] + ' ' + styles['matches-table__col--teams']} />
-            <col className={styles['matches-table__col'] + ' ' + styles['matches-table__col--score']} />
-          </colgroup>
-          <tbody>
-            {visibleMatches.map((match) => (
-              <tr key={match.id}>
-                <td className={styles['matches-table__cell'] + ' ' + styles['matches-table__cell--date']}>{formatUtcDateToLocal(match.utcDate)}</td>
-                <td className={styles['matches-table__cell'] + ' ' + styles['matches-table__cell--time']}>{formatUtcTimeToLocal(match.utcDate)}</td>
-                <td className={styles['matches-table__cell'] + ' ' + styles['matches-table__cell--status']}>{localizeMatchStatus(match.status)}</td>
-                <td className={styles['matches-table__cell'] + ' ' + styles['matches-table__cell--teams']}>
-                  {match.homeTeam.name} — {match.awayTeam.name}
-                </td>
-                <td className={styles['matches-table__cell'] + ' ' + styles['matches-table__cell--score']}>{formatScore(match)}</td>
-              </tr>
-            ))}
-            {visibleMatches.length === 0 && (
-              <tr>
-                <td colSpan={5} className={styles['matches-table__empty']}>
-                  {range.from || range.to ? 'Нет матчей в выбранном периоде.' : 'Список матчей пуст.'}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <MatchesTable visibleMatches={visibleMatches} range={range} />
 
       <Pagination
         count={totalCount}
-        pageSize={PAGE_SIZE}
+        pageSize={CALENDAR_PAGE_SIZE}
         currentPage={safePage}
         onPageChange={setPage}
       />

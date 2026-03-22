@@ -1,9 +1,6 @@
 import { Navigate, createBrowserRouter } from 'react-router-dom'
 import { Layout } from './layout'
-import { LeagueCalendarPage } from '../pages/league-calendar-page/league-calendar-page'
-import { LeaguesPage } from '../pages/leagues-page/leagues-page'
-import { TeamCalendarPage } from '../pages/team-calendar-page/team-calendar-page'
-import { TeamsPage } from '../pages/teams-page/teams-page'
+import { LeagueCalendarPage, LeaguesPage, TeamCalendarPage, TeamsPage } from '@/pages'
 
 export const router = createBrowserRouter([
   {

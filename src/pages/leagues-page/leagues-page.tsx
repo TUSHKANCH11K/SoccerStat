@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import fifaLogo from '@/assets/fifa_logo.svg'
-import { CatalogPageTemplate } from '../catalog-page-template/catalog-page-template'
-import { getCompetitions } from '../../shared/api/competitions-service'
-import { resolveApiErrorMessage } from '../../shared/lib/api-error'
-import type { Competition } from '../../shared/types/competition'
-import { ErrorMessage } from '../../shared/ui/error-message/error-message'
-import { Loader } from '../../shared/ui/loader/loader'
-
-const PAGE_SIZE = 8
+import { CatalogPageTemplate } from '../catalog-page-template'
+import { getCompetitions } from '@/shared/api/competitions-service'
+import { resolveApiErrorMessage } from '@/shared/lib'
+import type { Competition } from '@/shared/types/competition'
+import { ErrorMessage, Loader } from '@/shared/ui'
+import { LIST_PAGE_SIZE } from '@/shared/consts'
 
 export function LeaguesPage() {
   const [page, setPage] = useState(1)
@@ -63,9 +61,9 @@ export function LeaguesPage() {
     })
   }, [leagues, query])
 
-  const safePage = Math.min(page, Math.max(1, Math.ceil(filteredLeagues.length / PAGE_SIZE)))
-  const startIndex = (safePage - 1) * PAGE_SIZE
-  const pageItems = filteredLeagues.slice(startIndex, startIndex + PAGE_SIZE)
+  const safePage = Math.min(page, Math.max(1, Math.ceil(filteredLeagues.length / LIST_PAGE_SIZE)))
+  const startIndex = (safePage - 1) * LIST_PAGE_SIZE
+  const pageItems = filteredLeagues.slice(startIndex, startIndex + LIST_PAGE_SIZE)
 
   const handleQueryChange = (value: string) => {
     setQuery(value)
@@ -95,7 +93,7 @@ export function LeaguesPage() {
       }))}
       emptyText={query ? 'Ничего не найдено' : 'Список лиг пуст.'}
       count={filteredLeagues.length}
-      pageSize={PAGE_SIZE}
+      pageSize={LIST_PAGE_SIZE}
       currentPage={safePage}
       onPageChange={setPage}
     />
