@@ -51,3 +51,38 @@
   color: #333333;
   border-bottom-color: #003da5;
 }
+
+@media (max-width: 1024px) {
+  .app-header__container {
+    max-width: none;
+    padding: 0 16px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-header__container {
+    height: 56px;
+    padding: 0 12px;
+    gap: 16px;
+  }
+
+  .brand__logo {
+    width: 64px;
+    height: 24px;
+  }
+
+  .app-nav {
+    gap: 16px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .app-header__container {
+    height: 52px;
+  }
+}

@@ -80,3 +80,25 @@
   text-align: center !important;
   color: #6b7280 !important;
 }
+
+@media (max-width: 1024px) {
+  .matches-table-wrap {
+    overflow-x: auto;
+  }
+
+  .matches-table {
+    min-width: 760px;
+  }
+}
+
+@media (max-width: 767px) {
+  .team-calendar-page .breadcrumbs {
+    margin-top: 8px;
+    margin-bottom: 16px;
+  }
+
+  .matches-table__cell {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}

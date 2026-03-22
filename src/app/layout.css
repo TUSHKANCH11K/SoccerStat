@@ -7,3 +7,15 @@
   margin: 0 auto;
   padding: 16px 0 0;
 }
+
+@media (max-width: 1024px) {
+  .app-main {
+    padding: 16px 16px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-main {
+    padding: 12px 12px 0;
+  }
+}

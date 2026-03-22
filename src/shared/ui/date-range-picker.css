@@ -65,3 +65,28 @@
   background: transparent;
   padding: 0 36px 0 10px;
 }
+
+@media (max-width: 767px) {
+  .date-range {
+    gap: 8px;
+  }
+
+  .date-range--inline {
+    gap: 6px;
+  }
+
+  .date-range__input-wrap,
+  .date-range__input-wrap--inline {
+    width: 160px;
+  }
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .date-range--inline {
+    row-gap: 8px;
+  }
+
+  .date-range__text {
+    min-width: fit-content;
+  }
+}
