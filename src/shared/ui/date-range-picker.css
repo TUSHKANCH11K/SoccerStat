@@ -1,0 +1,44 @@
+.date-range {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.date-range__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.date-range__label {
+  font-size: 14px;
+  color: #374151;
+}
+
+.date-range__input-wrap {
+  width: 220px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+}
+
+.date-range__icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.75;
+}
+
+.date-range__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #111827;
+  background: transparent;
+}

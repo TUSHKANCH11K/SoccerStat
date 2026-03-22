@@ -1,3 +1,5 @@
+import './error-message.css'
+
 type ErrorVariant = 'default' | 'rate-limit'
 
 interface ErrorMessageProps {

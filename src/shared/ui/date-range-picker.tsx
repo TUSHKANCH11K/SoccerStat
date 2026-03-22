@@ -1,4 +1,5 @@
 import searchIcon from '../../assets/search_icon.svg'
+import './date-range-picker.css'
 
 interface DateRangeValue {
   from: string

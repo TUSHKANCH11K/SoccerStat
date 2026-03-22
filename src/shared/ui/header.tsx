@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import './header.css'
 import fifaLogo from '../../assets/fifa_logo.svg'
 
 const navItems = [

@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import './breadcrumbs.css'
 
 export interface BreadcrumbItem {
   label: string

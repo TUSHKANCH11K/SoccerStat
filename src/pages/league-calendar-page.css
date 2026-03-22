@@ -1,0 +1,30 @@
+.matches-table-wrap {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.matches-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.matches-table th,
+.matches-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #333333;
+}
+
+.matches-table thead th {
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+.matches-table__empty {
+  text-align: center !important;
+  color: #6b7280 !important;
+}

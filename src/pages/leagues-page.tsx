@@ -1,42 +1,68 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import fifaLogo from '../assets/fifa_logo.svg'
-import { Pagination } from '../shared/ui/pagination'
-import { SearchBar } from '../shared/ui/search-bar'
-
-const LEAGUES = [
-  { name: 'Premier League', country: 'England', logo: fifaLogo },
-  { name: 'La Liga', country: 'Spain', logo: fifaLogo },
-  { name: 'Bundesliga', country: 'Germany', logo: fifaLogo },
-  { name: 'Serie A', country: 'Italy', logo: fifaLogo },
-  { name: 'Ligue 1', country: 'France', logo: fifaLogo },
-  { name: 'Eredivisie', country: 'Netherlands', logo: fifaLogo },
-  { name: 'Primeira Liga', country: 'Portugal', logo: fifaLogo },
-  { name: 'Championship', country: 'England', logo: fifaLogo },
-  { name: 'MLS', country: 'United States', logo: fifaLogo },
-  { name: 'Brasileirão Série A', country: 'Brazil', logo: fifaLogo },
-  { name: 'J1 League', country: 'Japan', logo: fifaLogo },
-  { name: 'Saudi Pro League', country: 'Saudi Arabia', logo: fifaLogo },
-  { name: 'UEFA Champions League', country: 'Europe', logo: fifaLogo },
-  { name: 'UEFA Europa League', country: 'Europe', logo: fifaLogo },
-]
+import { CatalogPageTemplate } from './catalog-page-template'
+import { getCompetitions } from '../shared/api/competitions-service'
+import type { Competition } from '../shared/types/competition'
+import { ErrorMessage } from '../shared/ui/error-message'
+import { Loader } from '../shared/ui/loader'
 
 const PAGE_SIZE = 8
 
 export function LeaguesPage() {
   const [page, setPage] = useState(1)
   const [query, setQuery] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [leagues, setLeagues] = useState<Competition[]>([])
+
+  useEffect(() => {
+    let isMounted = true
+
+    const loadCompetitions = async () => {
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const response = await getCompetitions()
+
+        if (!isMounted) {
+          return
+        }
+
+        setLeagues(response.competitions)
+      } catch (loadError) {
+        if (!isMounted) {
+          return
+        }
+
+        setError(
+          loadError instanceof Error ? loadError.message : 'Не удалось загрузить список лиг.',
+        )
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void loadCompetitions()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const filteredLeagues = useMemo(() => {
     const normalized = query.trim().toLowerCase()
     if (!normalized) {
-      return LEAGUES
+      return leagues
     }
 
-    return LEAGUES.filter((league) => {
-      const searchable = `${league.name} ${league.country}`.toLowerCase()
+    return leagues.filter((league) => {
+      const searchable = `${league.name} ${league.area.name}`.toLowerCase()
       return searchable.includes(normalized)
     })
-  }, [query])
+  }, [leagues, query])
 
   const safePage = Math.min(page, Math.max(1, Math.ceil(filteredLeagues.length / PAGE_SIZE)))
   const startIndex = (safePage - 1) * PAGE_SIZE
@@ -47,25 +73,31 @@ export function LeaguesPage() {
     setPage(1)
   }
 
+  if (error) {
+    return <ErrorMessage message={error} />
+  }
+
+  if (isLoading) {
+    return <Loader label="Загружаем список лиг..." />
+  }
+
   return (
-    <section>
-      <SearchBar value={query} onChange={handleQueryChange} placeholder="Search" />
-      <ul className="league-grid">
-        {pageItems.map((league) => (
-          <li key={league.name} className="league-card">
-            <img src={league.logo} alt={league.name} className="league-card__logo" />
-            <h3 className="league-card__name">{league.name}</h3>
-            <p className="league-card__country">{league.country}</p>
-          </li>
-        ))}
-        {pageItems.length === 0 && <li className="league-grid__empty">Ничего не найдено</li>}
-      </ul>
-      <Pagination
-        count={filteredLeagues.length}
-        pageSize={PAGE_SIZE}
-        currentPage={safePage}
-        onPageChange={setPage}
-      />
-    </section>
+    <CatalogPageTemplate
+      variant="league"
+      searchValue={query}
+      onSearchChange={handleQueryChange}
+      items={pageItems.map((league) => ({
+        id: league.id,
+        name: league.name,
+        subtitle: league.area.name,
+        imageUrl: league.emblem,
+        fallbackImageUrl: fifaLogo,
+        linkTo: `/leagues/${league.id}/matches`,
+      }))}
+      count={filteredLeagues.length}
+      pageSize={PAGE_SIZE}
+      currentPage={safePage}
+      onPageChange={setPage}
+    />
   )
 }

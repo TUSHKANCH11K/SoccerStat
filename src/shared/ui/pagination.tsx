@@ -1,3 +1,5 @@
+import './pagination.css'
+
 interface PaginationProps {
   count: number
   pageSize: number

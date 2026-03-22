@@ -18,7 +18,10 @@ npm run dev
 
 ## Переменные окружения
 
-- `VITE_API_TOKEN` — токен для запросов к API football-data.org.
+- `VITE_API_KEY` — токен для запросов к API football-data.org.
+- `VITE_API_URL` — базовый URL API для production-сборки.
+
+В dev-режиме запросы идут через proxy `"/api"` (см. `vite.config.ts`).
 
 ## Доступные скрипты
 

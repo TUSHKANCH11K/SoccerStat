@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import './league-calendar-page.css'
 import { getCompetitionMatches } from '../shared/api/competition-matches-service'
 import { Breadcrumbs } from '../shared/ui/breadcrumbs'
 import { DateRangePicker } from '../shared/ui/date-range-picker'

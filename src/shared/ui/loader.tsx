@@ -1,3 +1,5 @@
+import './loader.css'
+
 interface LoaderProps {
   label?: string
 }
