@@ -3,7 +3,7 @@ import type { CompetitionMatch, MatchDateFilterParams } from '../types/match'
 import type { Team } from '../types/team'
 
 export interface TeamMatchesResponse {
-  count: number
+  
   filters?: {
     dateFrom?: string
     dateTo?: string

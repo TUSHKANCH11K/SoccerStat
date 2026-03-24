@@ -7,8 +7,8 @@ export interface MatchTeam {
 }
 
 export interface MatchScoreTime {
-  homeTeam: number | null
-  awayTeam: number | null
+  home: number | null
+  away: number | null
 }
 
 export interface MatchScore {
@@ -33,7 +33,9 @@ export interface CompetitionMatch {
 }
 
 export interface CompetitionMatchesResponse {
-  count: number
+  resultSet?: {
+    count: number
+  }
   competition: {
     id: number
     name: string

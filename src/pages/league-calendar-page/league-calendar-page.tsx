@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import styles from './league-calendar-page.module.css'
 import { getCompetitionMatches } from '@/shared/api/competition-matches-service'
 import { Breadcrumbs, DateRangePicker, ErrorMessage, Loader, Pagination } from '@/shared/ui'
 import type { CompetitionMatch } from '@/shared/types/match'
@@ -30,6 +29,10 @@ export function LeagueCalendarPage() {
       return
     }
 
+    if (hasPartialRange) {
+      return
+    }
+
     let isMounted = true
 
     const loadMatches = async () => {
@@ -48,7 +51,7 @@ export function LeagueCalendarPage() {
         }
         setMatches(response.matches)
         setLeagueName(response.competition.name || 'Лига')
-        setTotalCount(response.count)
+        setTotalCount(response.resultSet?.count || response.matches.length)
       } catch (loadError) {
         if (!isMounted) {
           return
@@ -66,7 +69,7 @@ export function LeagueCalendarPage() {
     return () => {
       isMounted = false
     }
-  }, [hasInvalidRange, leagueId, range.from, range.to])
+  }, [hasInvalidRange, leagueId, range.from, range.to, hasPartialRange])
 
   const safePage = Math.min(page, Math.max(1, Math.ceil(totalCount / CALENDAR_PAGE_SIZE)))
   const visibleMatches = useMemo(() => {
@@ -75,6 +78,7 @@ export function LeagueCalendarPage() {
   }, [matches, safePage])
 
   const handleRangeChange = (nextRange: { from: string; to: string }) => {
+    setError(null)
     setRange(nextRange)
     setPage(1)
   }
@@ -88,7 +92,7 @@ export function LeagueCalendarPage() {
   }
 
   return (
-    <section className={styles['league-calendar-page']}>
+    <section>
       <Breadcrumbs
         items={[{ label: 'Лиги', to: '/leagues' }, { label: leagueName }]}
         separator=">"

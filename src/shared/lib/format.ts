@@ -12,16 +12,14 @@ function hasNonNullScore(
 }
 
 export function formatScore(match: CompetitionMatch): string {
-  const fullTime = formatPart(match.score.fullTime.homeTeam, match.score.fullTime.awayTeam)
+  const fullTime = formatPart(match.score.fullTime.home, match.score.fullTime.away)
   const extraTime =
-    match.score.extraTime &&
-    hasNonNullScore(match.score.extraTime.homeTeam, match.score.extraTime.awayTeam)
-      ? `(${formatPart(match.score.extraTime.homeTeam, match.score.extraTime.awayTeam)})`
+    match.score.extraTime && hasNonNullScore(match.score.extraTime.home, match.score.extraTime.away)
+      ? `(${formatPart(match.score.extraTime.home, match.score.extraTime.away)})`
       : ''
   const penalties =
-    match.score.penalties &&
-    hasNonNullScore(match.score.penalties.homeTeam, match.score.penalties.awayTeam)
-      ? `(${formatPart(match.score.penalties.homeTeam, match.score.penalties.awayTeam)})`
+    match.score.penalties && hasNonNullScore(match.score.penalties.home, match.score.penalties.away)
+      ? `(${formatPart(match.score.penalties.home, match.score.penalties.away)})`
       : ''
 
   return `${fullTime}${extraTime}${penalties}`

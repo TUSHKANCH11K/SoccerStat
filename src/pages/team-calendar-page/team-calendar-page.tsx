@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import styles from './team-calendar-page.module.css'
 import { Breadcrumbs, DateRangePicker, ErrorMessage, Loader, Pagination } from '@/shared/ui'
 import type { CompetitionMatch } from '@/shared/types/match'
 import { CALENDAR_PAGE_SIZE } from '@/shared/consts'
@@ -53,7 +52,7 @@ export function TeamCalendarPage() {
 
         setTeamName(teamResponse.name || 'Команда')
         setMatches(matchesResponse.matches)
-        setTotalCount(matchesResponse.count)
+        setTotalCount(matchesResponse.resultSet?.count || matchesResponse.matches.length)
       } catch (loadError) {
         if (!isMounted) {
           return
@@ -94,7 +93,7 @@ export function TeamCalendarPage() {
   }
 
   return (
-    <section className={styles['team-calendar-page']}>
+    <section>
       <Breadcrumbs
         items={[{ label: 'Команды', to: '/teams' }, { label: teamName }]}
         separator=">"
